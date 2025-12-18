@@ -152,8 +152,8 @@
             <form
                 hx-post="/items"
                 hx-swap="none"
-                hx-on::after-request="this.reset(); window.dispatchEvent(new CustomEvent('item-added')); htmx.trigger('body', 'refreshList')"
-                @item-added.window="showAddItem = false; refreshStats()"
+                hx-on::after-request="htmx.trigger('body', 'refreshList'); window.dispatchEvent(new CustomEvent('item-added'))"
+                @item-added.window="refreshStats(); if (!addMore) { showAddItem = false; } else { $el.querySelector('[name=name]').value = ''; $el.querySelector('[name=description]').value = ''; $nextTick(() => $refs.itemNameInput.focus()); }"
                 class="space-y-4"
             >
                 <select name="section_id" required
@@ -162,10 +162,19 @@
                     <option value="{{$section.ID}}" {{if eq $index 0}}selected{{end}}>{{$section.Name}}</option>
                     {{end}}
                 </select>
-                <input type="text" name="name" :placeholder="t('items.what_to_buy')" required
+                <input type="text" name="name" x-ref="itemNameInput" :placeholder="t('items.what_to_buy')" required
+                    @keydown.enter.prevent="$el.form.requestSubmit()"
                     class="w-full border border-stone-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400">
                 <textarea name="description" :placeholder="t('items.note_optional')" rows="2"
                     class="w-full border border-stone-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-pink-400 resize-none"></textarea>
+                <label class="flex items-center justify-between py-2 cursor-pointer select-none">
+                    <span class="text-sm text-stone-600" x-text="t('items.add_more')"></span>
+                    <div class="relative">
+                        <input type="checkbox" x-model="addMore" class="sr-only peer">
+                        <div class="w-10 h-6 bg-stone-200 rounded-full peer peer-checked:bg-pink-400 transition-colors"></div>
+                        <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-4"></div>
+                    </div>
+                </label>
                 <div class="flex gap-3 pt-2">
                     <button type="button" @click="showAddItem = false"
                         class="flex-1 border border-stone-200 text-stone-600 py-3 rounded-lg text-sm font-medium"

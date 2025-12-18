@@ -30,7 +30,8 @@
     "name": "Nazwa...",
     "new_product": "Nowy produkt",
     "select_section": "Wybierz sekcję...",
-    "section": "Sekcja..."
+    "section": "Sekcja...",
+    "add_more": "Dodaj więcej"
   },
   "sections": {
     "title": "Sekcje",

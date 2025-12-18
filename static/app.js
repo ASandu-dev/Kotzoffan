@@ -66,6 +66,7 @@ function shoppingList() {
         // Modals
         showManageSections: false,
         showAddItem: false,
+        addMore: false,
         showEditModal: false,
         showSettings: false,
         showOfflineModal: false,
@@ -1239,8 +1240,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const alpineData = Alpine.$data(document.querySelector('[x-data="shoppingList()"]'));
             if (alpineData) {
                 alpineData.stats.total++;
-                // Close mobile add item modal if open
-                alpineData.showAddItem = false;
+                // Close mobile add item modal if open (unless addMore is enabled)
+                if (!alpineData.addMore) {
+                    alpineData.showAddItem = false;
+                } else {
+                    // Keep modal open, focus on name input
+                    setTimeout(() => {
+                        const nameInput = form.querySelector('[name=name]');
+                        if (nameInput) nameInput.focus();
+                    }, 100);
+                }
             }
 
             return false;

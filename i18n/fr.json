@@ -30,7 +30,8 @@
     "name": "Nom...",
     "new_product": "Nouveau produit",
     "select_section": "Choisir un rayon...",
-    "section": "Rayon..."
+    "section": "Rayon...",
+    "add_more": "Ajouter plus"
   },
   "sections": {
     "title": "Rayons",
