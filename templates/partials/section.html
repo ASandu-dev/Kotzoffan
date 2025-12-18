@@ -33,8 +33,7 @@
     <!-- Completed Items -->
     {{if gt $completedItems 0}}
     <div class="border-t border-stone-100 bg-stone-50/50 rounded-b-xl"
-         x-data="{ open: false }"
-         x-init="try { open = window.getCompletedSectionState ? window.getCompletedSectionState({{.Section.ID}}) : false } catch(e) { open = false }">
+         x-data="{ open: false, init() { try { const s = localStorage.getItem('completedSections'); if (s) { this.open = JSON.parse(s)['section-{{.Section.ID}}'] || false; } } catch(e) {} } }">
         <button
             @click="open = !open; try { let s = JSON.parse(localStorage.getItem('completedSections') || '{}'); s['section-{{.Section.ID}}'] = open; localStorage.setItem('completedSections', JSON.stringify(s)); } catch(e) {}"
             class="w-full px-4 py-2 flex items-center gap-2 cursor-pointer select-none hover:bg-stone-100/50 transition-colors"
