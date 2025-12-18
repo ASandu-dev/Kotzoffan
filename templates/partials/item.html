@@ -123,7 +123,7 @@
 
         <!-- Delete -->
         <button
-            @click="if(confirm(t('confirm.delete_item', {name: '{{.Item.Name}}'}))) { document.getElementById('item-{{.Item.ID}}').classList.add('item-exit'); setTimeout(() => htmx.ajax('DELETE', '/items/{{.Item.ID}}', {target: '#item-{{.Item.ID}}', swap: 'outerHTML'}).then(() => htmx.trigger('#stats-container', 'refresh')), 200); }"
+            @click="if(confirm(t('confirm.delete_item', {name: '{{.Item.Name}}'}))) { const el = document.getElementById('item-{{.Item.ID}}'); window.updateSectionAfterDelete(el); el.classList.add('item-exit'); setTimeout(() => htmx.ajax('DELETE', '/items/{{.Item.ID}}', {target: '#item-{{.Item.ID}}', swap: 'outerHTML'}).then(() => htmx.trigger('#stats-container', 'refresh')), 200); }"
             class="p-1.5 rounded-md hover:bg-red-50 text-stone-400 hover:text-red-500 transition-colors"
             :title="t('common.delete')"
         >

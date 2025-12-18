@@ -804,9 +804,10 @@ function shoppingList() {
 
             const itemId = this.mobileActionItem.id;
 
-            // Optimistic UI - remove item from DOM
+            // Optimistic UI - update section counter and remove item from DOM
             const itemEl = document.getElementById(`item-${itemId}`);
             if (itemEl) {
+                window.updateSectionAfterDelete(itemEl);
                 itemEl.classList.add('item-exit');
                 setTimeout(() => itemEl.remove(), 200);
             }
@@ -1515,6 +1516,55 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// Update section counter and visibility after item deletion
+window.updateSectionAfterDelete = function(itemElement) {
+    // Find parent section
+    const section = itemElement.closest('[data-section-id]');
+    if (!section) return;
+
+    // Count remaining items (active + completed)
+    const activeItems = section.querySelectorAll('.active-items > [id^="item-"]').length;
+    const completedContainer = section.querySelector('[x-show="open"]');
+    const completedItems = completedContainer ? completedContainer.querySelectorAll('[id^="item-"]').length : 0;
+
+    // Subtract 1 for the item being deleted (it's still in DOM at this point)
+    const isActiveItem = itemElement.closest('.active-items') !== null;
+    const newActiveCount = isActiveItem ? activeItems - 1 : activeItems;
+    const newCompletedCount = isActiveItem ? completedItems : completedItems - 1;
+    const newTotal = newActiveCount + newCompletedCount;
+
+    // Update counter
+    const counter = section.querySelector('.section-counter');
+    if (counter) {
+        counter.textContent = `${newCompletedCount}/${newTotal}`;
+    }
+
+    // Hide section if empty
+    if (newTotal === 0) {
+        section.classList.add('hidden');
+    }
+
+    // Hide "Bought" section if no completed items remain
+    if (newCompletedCount === 0) {
+        const boughtSection = section.querySelector('.border-t.border-stone-100.bg-stone-50\\/50');
+        if (boughtSection) {
+            boughtSection.style.display = 'none';
+        }
+    }
+};
+
+// Get completed section state from localStorage (safe for iOS Safari)
+window.getCompletedSectionState = function(sectionId) {
+    try {
+        const stored = localStorage.getItem('completedSections');
+        if (!stored) return false;
+        const data = JSON.parse(stored);
+        return data['section-' + sectionId] || false;
+    } catch(e) {
+        return false;
+    }
+};
 
 // Global function for uncertain toggle (called from onclick)
 window.toggleUncertain = async function(itemId) {
