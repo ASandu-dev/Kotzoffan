@@ -8,7 +8,7 @@ spec:
         branch: main
         deploy_on_push: true
       http_port: 3000
-      instance_size_slug: basic-xxs
+      instance_size_slug: apps-s-1vcpu-0.5gb
       instance_count: 1
       routes:
         - path: /
