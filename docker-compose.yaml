@@ -10,7 +10,7 @@ services:
       - PORT=88
       - DB_PATH=/data/shopping.db
     volumes:
-      - shopping-data:/data
+      - ./shopping-data:/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://127.0.0.1:88/login || exit 1"]
